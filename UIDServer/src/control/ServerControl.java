@@ -86,6 +86,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         employeePanel = new EmployeePanel();
         requestPanel = new RequestPanel();
         menuPanel = new MenuPanel();
+        userPanel = new UserPanel();
 
         // set login panel first when main frame is opened
         this.serverFrame.getMainSplitPane().setRightComponent(loginPanel);
@@ -121,7 +122,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 //            try {
 //                if (employeeDAO.login(employee)) {
 //                    serverFrame.showMessage("Login successfully!");
-            serverFrame.getMainSplitPane().setRightComponent(employeePanel);
+            serverFrame.getMainSplitPane().setRightComponent(userPanel);
             menuPanel.addBtnMenuListener(new MenuListener());
             serverFrame.addBtnControlListener(new ControlServerListener());
 //                } else {

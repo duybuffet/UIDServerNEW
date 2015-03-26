@@ -101,7 +101,7 @@ public class MenuPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAreaActionPerformed
 
     private void btnEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmpActionPerformed
-        // TODO add your handling code here:
+        // TO add your handling code here:
     }//GEN-LAST:event_btnEmpActionPerformed
 
     public void addBtnMenuListener(ActionListener log) {
