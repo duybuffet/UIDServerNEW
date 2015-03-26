@@ -9,6 +9,8 @@ import common.model.Area;
 import common.model.Centre;
 import common.model.Employee;
 import common.model.PersonDetails;
+import common.utility.ChartArea;
+import dao.AllDao;
 import dao.AreaDAO;
 import dao.CentreDAO;
 import dao.EmployeeDAO;
@@ -17,11 +19,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileOutputStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -29,16 +33,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import remote.RMICitizenAction;
 import view.AreaPanel;
 import view.CentreFrame;
+import view.ChartPanel;
 import view.EmployeePanel;
+import view.ExportToExcelPanel;
 import view.LoginPanel;
 import view.MenuPanel;
-import view.RequestPanel;
 import view.ServerFrame;
 import view.UserPanel;
+import view.RequestPanel;
 
 /**
  *
@@ -54,6 +65,8 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private RequestPanel requestPanel;
     private MenuPanel menuPanel;
     private UserPanel userPanel;
+    private ChartPanel chartPanel;
+    private ExportToExcelPanel exportToExcelPanel;
 
     private AreaDAO areaDAO;
     private String areaCode, areaName;
@@ -66,12 +79,13 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private EmployeeDAO empDao;
     private String userName, pass, cpass;
     private int empId, gender;
-    
+
     private int PORT = 8989;
     private String HOST = "localhost";
     private Registry registry;
     private String RMIService = "RMIClientAction";
-    
+
+    private HSSFWorkbook wb;
 
     public ServerControl(ServerFrame serverFrame) throws RemoteException {
         initComponents(serverFrame);
@@ -87,6 +101,8 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         requestPanel = new RequestPanel();
         menuPanel = new MenuPanel();
         userPanel = new UserPanel();
+        exportToExcelPanel = new ExportToExcelPanel();
+        chartPanel = new ChartPanel();
 
         // set login panel first when main frame is opened
         this.serverFrame.getMainSplitPane().setRightComponent(loginPanel);
@@ -152,6 +168,16 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             } else if (btn == menuPanel.getBtnUser()) {
                 serverFrame.getMainSplitPane().setRightComponent(userPanel);
                 userPanel.addBtnUserListener(new UserListener());
+            } else if (btn == menuPanel.getBtnExportToExcel()) {
+                serverFrame.getMainSplitPane().setRightComponent(exportToExcelPanel);
+                exportToExcelPanel.addBtnExportToExcelListener(new ExportToExcelListener());
+                new ExportToExcelListener().showAllArea();
+                new ExportToExcelListener().showAllCentre();
+                new ExportToExcelListener().showAllEmployee();
+            } else if (btn == menuPanel.getBtnChart()) {
+                serverFrame.getMainSplitPane().setRightComponent(chartPanel);
+                ChartArea chart = new ChartArea();
+                chart.showChart();
             }
         }
 
@@ -285,19 +311,18 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         private void updateArea() {
             System.out.println(areaCodeTemp);
             System.out.println(areaCode);
-            
+
             int result = JOptionPane.showConfirmDialog(areaPanel, "AreCode : " + areaCode + "\nAreaName : " + areaName, "Are you insert?", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
 
-                if(!areaCodeTemp.equals(areaCode)){
+                if (!areaCodeTemp.equals(areaCode)) {
                     showMessageDialog(" You not change Area Code!");
-                }
-                else{
+                } else {
                     areaDAO = new AreaDAO();
                     try {
                         areaDAO.update(new Area(areaCode, areaName));
                         showMessageDialog("Update Success!");
-                        showAllArea(); 
+                        showAllArea();
                     } catch (SQLException ex) {
                         showMessageDialog("Update wrong!");
                         Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
@@ -834,7 +859,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String oldPass = "", newPass = "", cPass="";
+            String oldPass = "", newPass = "", cPass = "";
             Employee employee = new Employee();
             EmployeeDAO employeeDAO = new EmployeeDAO();
             oldPass = userPanel.getTxtOPass().getPassword().toString();
@@ -858,5 +883,109 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 //            }
         }
 
+    }
+    
+    class ExportToExcelListener implements ActionListener,ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            int index = exportToExcelPanel.getTabPanel().getSelectedIndex();
+            if(index == 0){
+//                showAllArea();
+            }
+            if(index == 1){
+//                showAllCentre();
+            }
+            if(index == 2){
+//                showAllArea();
+            }
+        }
+        private void showAllArea() {
+            areaDAO = new AreaDAO();
+            ArrayList<Area> listArae = new ArrayList<>();
+            try {
+                listArae = areaDAO.selectAll();
+                Vector tblRecords = new Vector();
+                Vector tblTitle = new Vector();
+                tblTitle.add("Area Code");
+                tblTitle.add("Area Name");
+
+                for (Area ls : listArae) {
+                    Vector record = new Vector();
+                    record.add(ls.getAreaCode());
+                    record.add(ls.getAreaName());
+                    tblRecords.add(record);
+                }
+                exportToExcelPanel.getTblArea().setModel(new DefaultTableModel(tblRecords, tblTitle));
+            } catch (SQLException ex) {
+                Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        private void showAllCentre() {
+            centreDAO = new CentreDAO();
+            ArrayList<Centre> listCentre = new ArrayList<>();
+            try {
+                listCentre = centreDAO.selectAll();
+                Vector tblRecords = new Vector();
+                Vector tblTitle = new Vector();
+                tblTitle.add("Centre ID");
+                tblTitle.add("Centre Name");
+
+                for (Centre lc : listCentre) {
+                    Vector record = new Vector();
+                    record.add(lc.getCentreId());
+                    record.add(lc.getCentreName());
+                    tblRecords.add(record);
+                }
+                exportToExcelPanel.getTblCentre().setModel(new DefaultTableModel(tblRecords, tblTitle));
+            } catch (SQLException ex) {
+                Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        private void showAllEmployee() {
+        
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton btn = (JButton) e.getSource();
+            if (btn == exportToExcelPanel.getBtnExportToExcel()) {
+                ExportToExcel();        
+            }
+        }
+        private void ExportToExcel() {
+            String[] nameTableData = {"Area","Centre","Employee"};
+            String[] nameTable = {"Areas sheet","Centre sheet","Employee sheet"};
+            String[][] nameColumn = {{"Area Code","Area Name"},
+                                     {"Centre ID","Area Code","Centre Name"},
+                                     {"Id","Username","Pass","Gender"}};
+            try {
+                HSSFWorkbook wb = new HSSFWorkbook();
+                for (int i = 0; i < nameTableData.length; i++) {
+                    ResultSet rs = new AllDao().getTables(nameTableData[i]);
+                    HSSFSheet sheet = wb.createSheet(nameTable[i]);
+                    HSSFRow rowhead = sheet.createRow((short) 0);
+                    for (int j = 0; j < nameColumn[i].length; j++) {
+                        rowhead.createCell((short) j).setCellValue(nameColumn[i][j]);
+                    }
+                    int index = 1;
+                    while (rs.next()) {
+                        HSSFRow row = sheet.createRow((short) index);
+                        for (int x = 0; x < nameColumn[i].length; x++) {
+                            row.createCell((short) x).setCellValue(rs.getString(x+1));
+                        }
+                        index++;
+                    }
+                }
+                FileOutputStream fileOut = new FileOutputStream("D:\\excelFile.xls");
+                wb.write(fileOut);
+                fileOut.close();
+                JOptionPane.showMessageDialog(exportToExcelPanel, "Export file Excel Success ! Folder: D:\\excelFile.xls");
+            } 
+            catch (Exception ex) {
+                JOptionPane.showMessageDialog(exportToExcelPanel, "Export file excel Fails!");
+                Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
