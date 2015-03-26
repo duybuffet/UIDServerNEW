@@ -2,6 +2,7 @@ package run;
 
 
 import control.ServerControl;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -50,11 +51,15 @@ public class Test {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ServerFrame view = new ServerFrame();
-                view.setVisible(true);
-                view.setResizable(false);
-                ServerControl control = new ServerControl(view);
-                // test github dang hung
+                try {
+                    ServerFrame view = new ServerFrame();
+                    view.setVisible(true);
+                    view.setResizable(false);
+                    ServerControl control = new ServerControl(view);
+                    // test github dang hung
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

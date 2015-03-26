@@ -8,13 +8,20 @@ package control;
 import common.model.Area;
 import common.model.Centre;
 import common.model.Employee;
+import common.model.PersonDetails;
 import dao.AreaDAO;
 import dao.CentreDAO;
 import dao.EmployeeDAO;
+import dao.PersonDetailsDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -23,6 +30,7 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import remote.RMICitizenAction;
 import view.AreaPanel;
 import view.CentreFrame;
 import view.EmployeePanel;
@@ -36,7 +44,7 @@ import view.UserPanel;
  *
  * @author Duy Buffet
  */
-public class ServerControl {
+public class ServerControl extends UnicastRemoteObject implements RMICitizenAction {
 
     private ServerFrame serverFrame;
     private CentreFrame centreFrame;
@@ -59,9 +67,15 @@ public class ServerControl {
     private String userName, pass, cpass;
     private int empId, gender;
     
+    private int PORT = 8989;
+    private String HOST = "localhost";
+    private Registry registry;
+    private String RMIService = "RMIClientAction";
+    
 
-    public ServerControl(ServerFrame serverFrame) {
+    public ServerControl(ServerFrame serverFrame) throws RemoteException {
         initComponents(serverFrame);
+        registry = LocateRegistry.createRegistry(PORT);
     }
 
     private void initComponents(ServerFrame serverFrame) {
@@ -79,6 +93,16 @@ public class ServerControl {
 
         // add action listener
         loginPanel.addBtnLoginListener(new LoginListener());
+    }
+
+    @Override
+    public ArrayList<PersonDetails> search(String fName, String mName, String lName) throws RemoteException {
+        return new PersonDetailsDAO().selectAllByFullName(fName, mName, lName);
+    }
+
+    @Override
+    public void sendRequest(PersonDetails pd, int centreId) throws RemoteException {
+        new PersonDetailsDAO().insert(pd, centreId);
     }
 
     class LoginListener implements ActionListener {
@@ -136,7 +160,28 @@ public class ServerControl {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            JButton btn = (JButton) e.getSource();
+            if (btn == serverFrame.getBtnStart()) {
+                try {
+                    registry.rebind(RMIService, ServerControl.this);
+                    serverFrame.showMessage("RMI Server is running...");
+                    serverFrame.getBtnStart().setEnabled(false);
+                    serverFrame.getBtnStop().setEnabled(true);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else if (btn == serverFrame.getBtnStop()) {
+                try {
+                    registry.unbind(RMIService);
+                    serverFrame.showMessage("RMI Server is stopped!");
+                    serverFrame.getBtnStart().setEnabled(true);
+                    serverFrame.getBtnStop().setEnabled(false);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NotBoundException ex) {
+                    Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
 
     }

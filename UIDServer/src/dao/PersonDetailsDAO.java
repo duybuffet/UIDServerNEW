@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class is responsible performing SQL queries on table PersonDetails
@@ -38,6 +40,32 @@ public class PersonDetailsDAO {
                     rs.getString("LastName"), rs.getString("DOB"), rs.getInt("Gender"),
                     rs.getString("Email"), rs.getString("Address"), rs.getString("Education"),
                     rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"),rs.getString("CitizenshipProof")));
+        }
+        return arrPersonDetails;
+    }
+    
+    /**
+     * This method performs SELECT query to get all people from the database.
+     * @return ArrayList<PersonDetails>
+     * @throws SQLException
+     */  
+    public ArrayList<PersonDetails> selectAllByFullName(String fName, String mName, String lName) {
+        ArrayList<PersonDetails> arrPersonDetails = new ArrayList<>();
+        try {            
+            String query = "SELECT RequestedId, UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof FROM PersonDetails WHERE FirstName LIKE '%"+fName+"%' AND MiddleName LIKE '%"+mName+"%' AND LastName LIKE '%"+lName+"%'";
+            PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                arrPersonDetails.add(new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"),rs.getInt("Status"),
+                        rs.getString("FirstName"), rs.getString("MiddleName"),
+                        rs.getString("LastName"), rs.getString("DOB"), rs.getInt("Gender"),
+                        rs.getString("Email"), rs.getString("Address"), rs.getString("Education"),
+                        rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"),rs.getString("CitizenshipProof")));
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(PersonDetailsDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrPersonDetails;
     }
@@ -116,25 +144,29 @@ public class PersonDetailsDAO {
      * @param centreId The centre that person belongs to
      * @throws SQLException
      */
-    public void insert(PersonDetails personDetails, int centreId) throws SQLException {
-        String query = "INSERT INTO PersonDetails(UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof, CentreId)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
-        ps.setString(1, personDetails.getUid());
-        ps.setInt(2, personDetails.getStatus());
-        ps.setString(3, personDetails.getFirstName());
-        ps.setString(4, personDetails.getMiddleName());
-        ps.setString(5, personDetails.getLastName());
-        ps.setString(6, personDetails.getDob());
-        ps.setInt(7, personDetails.getGender());
-        ps.setString(8, personDetails.getEmail());
-        ps.setString(9, personDetails.getAddress());
-        ps.setString(10, personDetails.getEducation());
-        ps.setString(11, personDetails.getOccupation());
-        ps.setInt(12, personDetails.getMarried());
-        ps.setInt(13, personDetails.getAddressProof());
-        ps.setString(14, personDetails.getCitizenshipProff());
-        ps.setInt(15, centreId);
-        ps.executeUpdate();
+    public void insert(PersonDetails personDetails, int centreId) {
+        try {
+            String query = "INSERT INTO PersonDetails(UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof, CentreId)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
+            ps.setString(1, personDetails.getUid());
+            ps.setInt(2, personDetails.getStatus());
+            ps.setString(3, personDetails.getFirstName());
+            ps.setString(4, personDetails.getMiddleName());
+            ps.setString(5, personDetails.getLastName());
+            ps.setString(6, personDetails.getDob());
+            ps.setInt(7, personDetails.getGender());
+            ps.setString(8, personDetails.getEmail());
+            ps.setString(9, personDetails.getAddress());
+            ps.setString(10, personDetails.getEducation());
+            ps.setString(11, personDetails.getOccupation());
+            ps.setInt(12, personDetails.getMarried());
+            ps.setInt(13, personDetails.getAddressProof());
+            ps.setString(14, personDetails.getCitizenshipProff());
+            ps.setInt(15, centreId);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PersonDetailsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     /**
      * This method performs UPDATE query to update an person in the database.
