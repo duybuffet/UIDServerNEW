@@ -80,10 +80,10 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private String userName, pass, cpass;
     private int empId, gender;
 
-    private int PORT = 8989;
-    private String HOST = "localhost";
+    private final int PORT = 8989;
+    private final String HOST = "localhost";
     private Registry registry;
-    private String RMIService = "RMIClientAction";
+    private final String RMI_SERVICE = "RMIClientAction";
 
     private HSSFWorkbook wb;
 
@@ -190,7 +190,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             JButton btn = (JButton) e.getSource();
             if (btn == serverFrame.getBtnStart()) {
                 try {
-                    registry.rebind(RMIService, ServerControl.this);
+                    registry.rebind(RMI_SERVICE, ServerControl.this);
                     serverFrame.showMessage("RMI Server is running...");
                     serverFrame.getBtnStart().setEnabled(false);
                     serverFrame.getBtnStop().setEnabled(true);
@@ -199,7 +199,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 }
             } else if (btn == serverFrame.getBtnStop()) {
                 try {
-                    registry.unbind(RMIService);
+                    registry.unbind(RMI_SERVICE);
                     serverFrame.showMessage("RMI Server is stopped!");
                     serverFrame.getBtnStart().setEnabled(true);
                     serverFrame.getBtnStop().setEnabled(false);
