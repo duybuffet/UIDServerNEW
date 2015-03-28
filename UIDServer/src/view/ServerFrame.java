@@ -1,18 +1,22 @@
 package view;
 
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import de.javasoft.plaf.synthetica.SyntheticaClassyLookAndFeel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author ASUS_PC
@@ -27,6 +31,11 @@ public class ServerFrame extends javax.swing.JFrame {
         setTitle("Server");
         btnStart.setEnabled(true);
         btnStop.setEnabled(false);
+        try {
+            UIManager.setLookAndFeel(new SyntheticaClassyLookAndFeel());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -111,7 +120,6 @@ public class ServerFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-
     public JSplitPane getMainSplitPane() {
         return mainSplitPane;
     }
@@ -135,12 +143,12 @@ public class ServerFrame extends javax.swing.JFrame {
     public void setLblRequest(JLabel lblRequest) {
         this.lblRequest = lblRequest;
     }
-    
+
     public void addBtnControlListener(ActionListener log) {
         btnStart.addActionListener(log);
         btnStop.addActionListener(log);
     }
-    
+
     public void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
     }
@@ -160,8 +168,7 @@ public class ServerFrame extends javax.swing.JFrame {
     public void setBtnStop(JButton btnStop) {
         this.btnStop = btnStop;
     }
-    
-    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;

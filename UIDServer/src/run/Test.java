@@ -28,22 +28,22 @@ public class Test {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
 
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    try {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (InstantiationException ex) {
-                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (UnsupportedLookAndFeelException ex) {
-                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Windows".equals(info.getName())) {
+//                    try {
+//                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                        break;
+//                    } catch (ClassNotFoundException ex) {
+//                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//                    } catch (InstantiationException ex) {
+//                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//                    } catch (IllegalAccessException ex) {
+//                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//                    } catch (UnsupportedLookAndFeelException ex) {
+//                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//            }s
             
       
         //</editor-fold>
