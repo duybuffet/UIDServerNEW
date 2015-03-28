@@ -67,24 +67,19 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private UserPanel userPanel;
     private ChartPanel chartPanel;
     private ExportToExcelPanel exportToExcelPanel;
-
     private AreaDAO areaDAO;
     private String areaCode, areaName;
     private String areaCodeTemp;
-
     private CentreDAO centreDAO;
     private String centreName;
     private int centreID;
-
     private EmployeeDAO empDao;
     private String userName, pass, cpass;
     private int empId, gender;
-
     private final int PORT = 8989;
     private final String HOST = "localhost";
     private Registry registry;
     private final String RMI_SERVICE = "RMIClientAction";
-
     private HSSFWorkbook wb;
 
     public ServerControl(ServerFrame serverFrame) throws RemoteException {
@@ -135,20 +130,20 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             employee.setUsername(userName);
             employee.setPass(pass);
 
-//            try {
-//                if (employeeDAO.login(employee)) {
-//                    serverFrame.showMessage("Login successfully!");
-            serverFrame.getMainSplitPane().setRightComponent(userPanel);
-            menuPanel.addBtnMenuListener(new MenuListener());
-            serverFrame.addBtnControlListener(new ControlServerListener());
-//                } else {
-//                    serverFrame.showMessage("Login unsuccessfully. Please reinput username or password");
-//                }
-//            } catch (SQLException ex) {
-//                serverFrame.showMessage("Server error! Sorry for this unconvenient.");
-//            }
+            try {
+                if (employeeDAO.login(employee)) {
+                    serverFrame.showMessage("Login successfully!");
+                    serverFrame.getMainSplitPane().setRightComponent(userPanel);
+                    userPanel.addBtnUserListener(new UserListener());
+                    menuPanel.addBtnMenuListener(new MenuListener());
+                    serverFrame.addBtnControlListener(new ControlServerListener());
+                } else {
+                    serverFrame.showMessage("Login failed. Please reinput username or password");
+                }
+            } catch (SQLException ex) {
+                serverFrame.showMessage("Server error! Sorry for this unconvenient.");
+            }
         }
-
     }
 
     class MenuListener implements ActionListener {
@@ -180,7 +175,6 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 chart.showChart();
             }
         }
-
     }
 
     class ControlServerListener implements ActionListener {
@@ -210,7 +204,6 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 }
             }
         }
-
     }
 
     class AreaListener implements ActionListener {
@@ -620,7 +613,6 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         public void actionPerformed(ActionEvent e) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-
     }
 
     class EmployeeListener implements ActionListener {
@@ -832,7 +824,6 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
         private void tblEvent() {
             employeePanel.getTblEmp().addMouseListener(new MouseAdapter() {
-
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
@@ -859,47 +850,41 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String oldPass = "", newPass = "", cPass = "";
-            Employee employee = new Employee();
-            EmployeeDAO employeeDAO = new EmployeeDAO();
-            oldPass = userPanel.getTxtOPass().getPassword().toString();
-            newPass = userPanel.getTxtNPass().getPassword().toString();
-            cPass = userPanel.getTxtCNPass().getPassword().toString();
+            try {
+                String oldPass = "", newPass = "", cPass = "";
+                Employee employee = new Employee();
+                EmployeeDAO employeeDAO = new EmployeeDAO();
+                oldPass = userPanel.getTxtOPass().getPassword().toString();
+                newPass = userPanel.getTxtNPass().getPassword().toString();
+                cPass = userPanel.getTxtCNPass().getPassword().toString();
 
-            employee.setUsername(userName);
-            employee.setPass(pass);
-
-//            try {
-//                if (employeeDAO.login(employee)) {
-//                    serverFrame.showMessage("Login successfully!");
-            serverFrame.getMainSplitPane().setRightComponent(employeePanel);
-            menuPanel.addBtnMenuListener(new MenuListener());
-            serverFrame.addBtnControlListener(new ControlServerListener());
-//                } else {
-//                    serverFrame.showMessage("Login unsuccessfully. Please reinput username or password");
-//                }
-//            } catch (SQLException ex) {
-//                serverFrame.showMessage("Server error! Sorry for this unconvenient.");
-//            }
+                employee.setUsername(userName);
+                employee.setPass(pass);
+                employeeDAO.changePassword(employee, oldPass);
+                serverFrame.showMessage("Change password successfully!");
+            } catch (SQLException ex) {
+                serverFrame.showMessage("Change password failed! Try again later.");
+                ex.printStackTrace();
+            }
         }
-
     }
-    
-    class ExportToExcelListener implements ActionListener,ChangeListener {
+
+    class ExportToExcelListener implements ActionListener, ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
             int index = exportToExcelPanel.getTabPanel().getSelectedIndex();
-            if(index == 0){
+            if (index == 0) {
 //                showAllArea();
             }
-            if(index == 1){
+            if (index == 1) {
 //                showAllCentre();
             }
-            if(index == 2){
+            if (index == 2) {
 //                showAllArea();
             }
         }
+
         private void showAllArea() {
             areaDAO = new AreaDAO();
             ArrayList<Area> listArae = new ArrayList<>();
@@ -943,22 +928,24 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
         private void showAllEmployee() {
-        
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton btn = (JButton) e.getSource();
             if (btn == exportToExcelPanel.getBtnExportToExcel()) {
-                ExportToExcel();        
+                ExportToExcel();
             }
         }
+
         private void ExportToExcel() {
-            String[] nameTableData = {"Area","Centre","Employee"};
-            String[] nameTable = {"Areas sheet","Centre sheet","Employee sheet"};
-            String[][] nameColumn = {{"Area Code","Area Name"},
-                                     {"Centre ID","Area Code","Centre Name"},
-                                     {"Id","Username","Pass","Gender"}};
+            String[] nameTableData = {"Area", "Centre", "Employee"};
+            String[] nameTable = {"Areas sheet", "Centre sheet", "Employee sheet"};
+            String[][] nameColumn = {{"Area Code", "Area Name"},
+                {"Centre ID", "Area Code", "Centre Name"},
+                {"Id", "Username", "Pass", "Gender"}};
             try {
                 HSSFWorkbook wb = new HSSFWorkbook();
                 for (int i = 0; i < nameTableData.length; i++) {
@@ -972,7 +959,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                     while (rs.next()) {
                         HSSFRow row = sheet.createRow((short) index);
                         for (int x = 0; x < nameColumn[i].length; x++) {
-                            row.createCell((short) x).setCellValue(rs.getString(x+1));
+                            row.createCell((short) x).setCellValue(rs.getString(x + 1));
                         }
                         index++;
                     }
@@ -981,8 +968,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 wb.write(fileOut);
                 fileOut.close();
                 JOptionPane.showMessageDialog(exportToExcelPanel, "Export file Excel Success ! Folder: D:\\excelFile.xls");
-            } 
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(exportToExcelPanel, "Export file excel Fails!");
                 Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -88,6 +88,23 @@ public class EmployeeDAO {
     }
     
     /**
+     * This method performs UPDATE query to change password an employee in the database.
+     * @param employee
+     * @param oldPass
+     * @throws SQLException
+     */
+    public void changePassword(Employee employee, String oldPass) throws SQLException {
+        String query = "UPDATE Employee SET Pass = ? WHERE Username = ? AND Pass = ?";
+        System.out.println(query);
+        PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
+        ps.setString(1, employee.getPass());
+        ps.setString(2, employee.getUsername());
+        ps.setString(3, oldPass);
+        
+        ps.executeUpdate();
+    }
+    
+    /**
      * This method performs DELETE query to delete an employee from the database.
      *
      * @param employee The employee we want to delete from the database.
