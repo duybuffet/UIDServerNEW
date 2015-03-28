@@ -67,20 +67,13 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private UserPanel userPanel;
     private ChartPanel chartPanel;
     private ExportToExcelPanel exportToExcelPanel;
-    private AreaDAO areaDAO;
-    private String areaCode, areaName;
-    private String areaCodeTemp;
-    private CentreDAO centreDAO;
-    private String centreName;
-    private int centreID;
-    private EmployeeDAO empDao;
-    private String userName, pass, cpass;
-    private int empId, gender;
+
     private final int PORT = 8989;
     private final String HOST = "localhost";
     private Registry registry;
-    private final String RMI_SERVICE = "RMIClientAction";
-    private HSSFWorkbook wb;
+    private final String RMI_SERVICE = "RMIClientAction";    
+    private static String USER_ONLINE;
+    private String areaCode;
 
     public ServerControl(ServerFrame serverFrame) throws RemoteException {
         initComponents(serverFrame);
@@ -119,11 +112,13 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
     class LoginListener implements ActionListener {
 
+        String userName = "", pass = "";
+        Employee employee;
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            String userName = "", pass = "";
-            Employee employee = new Employee();
-            EmployeeDAO employeeDAO = new EmployeeDAO();
+            employee = new Employee();
             userName = loginPanel.getTxtUName().getText().trim();
             pass = loginPanel.getTxtPass().getText().trim();
 
@@ -137,6 +132,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                     userPanel.addBtnUserListener(new UserListener());
                     menuPanel.addBtnMenuListener(new MenuListener());
                     serverFrame.addBtnControlListener(new ControlServerListener());
+                    USER_ONLINE = employee.getUsername();
                 } else {
                     serverFrame.showMessage("Login failed. Please reinput username or password");
                 }
@@ -207,6 +203,10 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     }
 
     class AreaListener implements ActionListener {
+
+        AreaDAO areaDAO;        
+        String areaName;
+        String areaCodeTemp;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -427,6 +427,10 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
     class CentreListener implements ActionListener {
 
+        CentreDAO centreDAO;
+        String centreName;
+        int centreID;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton btn = (JButton) e.getSource();
@@ -617,6 +621,12 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
     class EmployeeListener implements ActionListener {
 
+        EmployeeDAO empDao = new EmployeeDAO();
+        String userName = "", pass = "", cpass = "";
+        int gender = -1;
+        int empId = -1;
+        Employee emp;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton btn = (JButton) e.getSource();
@@ -632,23 +642,35 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 showAllEmployee();
             }
 
-            //Edit
-            if (btn == employeePanel.getBtnEdit()) {
-                if (inputCheck()) {
-                    editEmp();
-                }
-            }
-
-            //Delete
-            if (btn == employeePanel.getBtnDel()) {
-                if (inputCheck()) {
-                    deleteEmp();
-                }
-            }
-
             //Search
             if (btn == employeePanel.getBtnSearch()) {
-                searchEmp(empId);
+
+                try {
+                    emp = new Employee();
+                    empId = Integer.parseInt(employeePanel.getTxtId().getText().trim());
+
+                    emp = empDao.selectEmployeeByID(empId);
+                    if (emp != null) {
+                        Vector tblTitles = new Vector();
+                        Vector tblRow = new Vector();
+                        tblTitles.add("Id");
+                        tblTitles.add("Username");
+                        tblTitles.add("Gender");
+
+                        Vector v = new Vector();
+                        v.add(emp.getId());
+                        v.add(emp.getUsername());
+                        v.add(emp.getGender());
+                        tblRow.add(v);
+
+                        employeePanel.getTblEmp().setModel(new DefaultTableModel(tblRow, tblTitles));
+                        tblEvent();
+                    } else {
+                        serverFrame.showMessage("No result found!");
+                    }
+                } catch (SQLException ex) {
+                    serverFrame.showMessage("No result found!");
+                }
             }
 
         }
@@ -658,24 +680,28 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             int result = JOptionPane.showConfirmDialog(employeePanel, "Add this employee?", "", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                empDao = new EmployeeDAO();
-
                 try {
-                    empDao.insert(new Employee(empId, userName, pass, gender));
-                    showMessageDialog("Insert Success!");
+                    userName = employeePanel.getTxtUName().getText().trim();
+                    pass = employeePanel.getTxtPass().getText().trim();
+                    gender = (employeePanel.getRdoMale().isSelected()) ? 1 : 0;
+                    emp = new Employee(userName, pass, gender);
+                    empDao.insert(emp);
+
+                    serverFrame.showMessage("Insert Success!");
                     employeePanel.getTxtUName().setText("");
                     employeePanel.getTxtPass().setText("");
                     employeePanel.getTxtCPass().setText("");
                     employeePanel.getBtnGroupGender().clearSelection();
                 } catch (SQLException ex) {
-                    showMessageDialog("Insert Failed!");
-                    Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
+                    serverFrame.showMessage("Insert Failed!");
                 }
             }
         }
 
         //Check input information
         private boolean inputCheck() {
+
+            int gender;
             boolean check = false;
             String err = "";
 
@@ -710,7 +736,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             if (err.length() == 0) {
                 check = true;
             } else {
-                showMessageDialog(err);
+                serverFrame.showMessage(err);
             }
             return check;
         }
@@ -742,93 +768,11 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             }
         }
 
-        private void editEmp() {
-            int result = JOptionPane.showConfirmDialog(employeePanel, "Are you sure?", "", JOptionPane.YES_NO_OPTION);
-
-            if (result == JOptionPane.YES_OPTION) {
-                empDao = new EmployeeDAO();
-
-                try {
-                    empDao.update(new Employee(empId, userName, pass, gender));
-                    showMessageDialog("Update Success!");
-                    employeePanel.getTxtUName().setText("");
-                    employeePanel.getTxtPass().setText("");
-                    employeePanel.getTxtCPass().setText("");
-                    employeePanel.getBtnGroupGender().clearSelection();
-                } catch (SQLException ex) {
-                    showMessageDialog("Update Failed!");
-                    Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        private void deleteEmp() {
-            int result = JOptionPane.showConfirmDialog(employeePanel, "Are you sure?", "", JOptionPane.YES_NO_OPTION);
-
-            if (result == JOptionPane.YES_OPTION) {
-                empDao = new EmployeeDAO();
-
-                try {
-                    empDao.delete(new Employee(userName, pass, gender));
-                    showMessageDialog("Delete Sucess!");
-                    employeePanel.getTxtUName().setText("");
-                    employeePanel.getTxtPass().setText("");
-                    employeePanel.getTxtCPass().setText("");
-                    employeePanel.getBtnGroupGender().clearSelection();
-                } catch (SQLException ex) {
-                    showMessageDialog("Delete Failed!");
-                    Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        private void searchEmp(int Id) {
-//            employeePanel.getTxtId().setEnabled(true);
-//            employeePanel.getTxtUName().setEnabled(false);
-//            employeePanel.getTxtPass().setEnabled(false);
-//            employeePanel.getTxtCPass().setEnabled(false);
-//            employeePanel.getRdoMale().setEnabled(false);
-//            employeePanel.getRdoFemale().setEnabled(false);
-            empDao = new EmployeeDAO();
-            Employee emp = new Employee();
-
-            try {
-                emp = empDao.selectEmployeeByID(Id);
-
-                if (emp != null) {
-                    Vector tblTitles = new Vector();
-                    Vector tblRow = new Vector();
-                    tblTitles.add("Id");
-                    tblTitles.add("Username");
-                    tblTitles.add("Gender");
-
-                    Vector v = new Vector();
-                    v.add(emp.getId());
-                    v.add(emp.getUsername());
-                    v.add(emp.getGender());
-                    tblRow.add(v);
-
-                    employeePanel.getTblEmp().setModel(new DefaultTableModel(tblRow, tblTitles));
-                    tblEvent();
-                } else {
-                    showMessageDialog("No result found!");
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerControl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        private void showMessageDialog(String message) {
-            JOptionPane.showMessageDialog(employeePanel, message);
-        }
-
         private void tblEvent() {
             employeePanel.getTblEmp().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
-                        employeePanel.getBtnDel().setEnabled(true);
-                        employeePanel.getBtnEdit().setEnabled(true);
                         int row = employeePanel.getTblEmp().getSelectedRow();
 
                         employeePanel.getTxtId().setText((String) employeePanel.getTblEmp().getValueAt(row, 0));
@@ -848,18 +792,21 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
     class UserListener implements ActionListener {
 
+        String oldPass = "", newPass = "", cPass = "";
+
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                String oldPass = "", newPass = "", cPass = "";
+
+                int gender;
                 Employee employee = new Employee();
                 EmployeeDAO employeeDAO = new EmployeeDAO();
-                oldPass = userPanel.getTxtOPass().getPassword().toString();
-                newPass = userPanel.getTxtNPass().getPassword().toString();
-                cPass = userPanel.getTxtCNPass().getPassword().toString();
+                oldPass = userPanel.getTxtOPass().getText();
+                newPass = userPanel.getTxtNPass().getText();
+                cPass = userPanel.getTxtCNPass().getText();
 
-                employee.setUsername(userName);
-                employee.setPass(pass);
+                employee.setUsername(USER_ONLINE);
+                employee.setPass(newPass);
                 employeeDAO.changePassword(employee, oldPass);
                 serverFrame.showMessage("Change password successfully!");
             } catch (SQLException ex) {
@@ -870,6 +817,10 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     }
 
     class ExportToExcelListener implements ActionListener, ChangeListener {
+
+        CentreDAO centreDAO;
+        AreaDAO areaDAO;
+        HSSFWorkbook wb;
 
         @Override
         public void stateChanged(ChangeEvent e) {
@@ -944,8 +895,8 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             String[] nameTableData = {"Area", "Centre", "Employee"};
             String[] nameTable = {"Areas sheet", "Centre sheet", "Employee sheet"};
             String[][] nameColumn = {{"Area Code", "Area Name"},
-                {"Centre ID", "Area Code", "Centre Name"},
-                {"Id", "Username", "Pass", "Gender"}};
+            {"Centre ID", "Area Code", "Centre Name"},
+            {"Id", "Username", "Pass", "Gender"}};
             try {
                 HSSFWorkbook wb = new HSSFWorkbook();
                 for (int i = 0; i < nameTableData.length; i++) {

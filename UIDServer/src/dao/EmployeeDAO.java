@@ -97,6 +97,8 @@ public class EmployeeDAO {
         String query = "UPDATE Employee SET Pass = ? WHERE Username = ? AND Pass = ?";
         System.out.println(query);
         PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
+        System.out.println(employee.getPass());
+        System.out.println(employee.getUsername());
         ps.setString(1, employee.getPass());
         ps.setString(2, employee.getUsername());
         ps.setString(3, oldPass);
