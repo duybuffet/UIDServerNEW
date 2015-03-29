@@ -30,13 +30,15 @@ public class ServerFrame extends javax.swing.JFrame {
         initComponents();
         setTitle("Server");
         
+        
+        btnStart.setEnabled(true);
+        btnStop.setEnabled(false);
+        
         try {
             UIManager.setLookAndFeel(new SyntheticaClassyLookAndFeel());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        btnStart.setEnabled(true);
-        btnStop.setEnabled(false);
     }
 
     /**
@@ -50,7 +52,6 @@ public class ServerFrame extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         mainSplitPane = new javax.swing.JSplitPane();
-        controlPane = new javax.swing.JPanel();
         btnStart = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
         lblRequest = new javax.swing.JLabel();
@@ -66,35 +67,8 @@ public class ServerFrame extends javax.swing.JFrame {
         btnStart.setText("Start");
 
         btnStop.setText("Stop");
-        btnStop.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStopActionPerformed(evt);
-            }
-        });
 
-        lblRequest.setText("Request:0");
-
-        javax.swing.GroupLayout controlPaneLayout = new javax.swing.GroupLayout(controlPane);
-        controlPane.setLayout(controlPaneLayout);
-        controlPaneLayout.setHorizontalGroup(
-            controlPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlPaneLayout.createSequentialGroup()
-                .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnStop, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(66, 66, 66)
-                .addComponent(lblRequest, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        controlPaneLayout.setVerticalGroup(
-            controlPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlPaneLayout.createSequentialGroup()
-                .addGroup(controlPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnStart)
-                    .addComponent(btnStop)
-                    .addComponent(lblRequest, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
-        );
+        lblRequest.setText("Request : 1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -102,24 +76,30 @@ public class ServerFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(1, 1, 1)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(controlPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE)))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnStop, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addComponent(lblRequest)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(controlPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnStart)
+                    .addComponent(btnStop)
+                    .addComponent(lblRequest))
+                .addGap(12, 12, 12)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnStopActionPerformed
 
     /**
      * @param args the command line arguments
@@ -130,14 +110,6 @@ public class ServerFrame extends javax.swing.JFrame {
 
     public void setMainSplitPane(JSplitPane mainSplitPane) {
         this.mainSplitPane = mainSplitPane;
-    }
-
-    public JPanel getControlPane() {
-        return controlPane;
-    }
-
-    public void setControlPane(JPanel controlPane) {
-        this.controlPane = controlPane;
     }
 
     public JLabel getLblRequest() {
@@ -177,7 +149,6 @@ public class ServerFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;
     private javax.swing.JButton btnStop;
-    private javax.swing.JPanel controlPane;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblRequest;
     private javax.swing.JSplitPane mainSplitPane;
