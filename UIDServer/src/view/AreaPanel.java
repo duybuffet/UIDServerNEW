@@ -93,7 +93,7 @@ public class AreaPanel extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tblArea);
 
         btnGotoCentre.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnGotoCentre.setText("Go to  Centre");
+        btnGotoCentre.setText("Go to Centre");
         btnGotoCentre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGotoCentreActionPerformed(evt);

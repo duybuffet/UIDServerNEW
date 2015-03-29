@@ -30,6 +30,7 @@ public class MenuPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPasswordField1 = new javax.swing.JPasswordField();
         btnEmp = new javax.swing.JButton();
         btnArea = new javax.swing.JButton();
         btnRequest = new javax.swing.JButton();
@@ -37,14 +38,18 @@ public class MenuPanel extends javax.swing.JPanel {
         btnExportToExcel = new javax.swing.JButton();
         btnChart = new javax.swing.JButton();
 
-        btnEmp.setText("Employee");
+        jPasswordField1.setText("jPasswordField1");
+
+        btnEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Users-icon (1).png"))); // NOI18N
+        btnEmp.setText(" Employee");
         btnEmp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEmpActionPerformed(evt);
             }
         });
 
-        btnArea.setText("Area");
+        btnArea.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/location-icon.png"))); // NOI18N
+        btnArea.setText("  Area       ");
         btnArea.setPreferredSize(new java.awt.Dimension(55, 40));
         btnArea.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -52,13 +57,32 @@ public class MenuPanel extends javax.swing.JPanel {
             }
         });
 
-        btnRequest.setText("Request");
+        btnRequest.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/checklist-icon.png"))); // NOI18N
+        btnRequest.setText(" Request  ");
 
-        btnUser.setText("User");
+        btnUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user_icon4.png"))); // NOI18N
+        btnUser.setText("  User        ");
+        btnUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUserActionPerformed(evt);
+            }
+        });
 
-        btnExportToExcel.setText("Export");
+        btnExportToExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/export-icon.png"))); // NOI18N
+        btnExportToExcel.setText(" Export     ");
+        btnExportToExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportToExcelActionPerformed(evt);
+            }
+        });
 
-        btnChart.setText("Chart");
+        btnChart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/red-chart-icon.png"))); // NOI18N
+        btnChart.setText(" Chart      ");
+        btnChart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChartActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -66,12 +90,10 @@ public class MenuPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(btnEmp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnRequest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnExportToExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(btnArea, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(btnChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,6 +153,18 @@ public class MenuPanel extends javax.swing.JPanel {
         // TO add your handling code here:
     }//GEN-LAST:event_btnEmpActionPerformed
 
+    private void btnUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUserActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUserActionPerformed
+
+    private void btnExportToExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportToExcelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnExportToExcelActionPerformed
+
+    private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnChartActionPerformed
+
     public void addBtnMenuListener(ActionListener log) {
         btnUser.addActionListener(log);
         btnArea.addActionListener(log);
@@ -147,5 +181,6 @@ public class MenuPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnExportToExcel;
     private javax.swing.JButton btnRequest;
     private javax.swing.JButton btnUser;
+    private javax.swing.JPasswordField jPasswordField1;
     // End of variables declaration//GEN-END:variables
 }
