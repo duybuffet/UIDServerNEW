@@ -137,6 +137,21 @@ public class PersonDetailsDAO {
         }
         return personDetails;
     }
+    
+    public ResultSet selectAllPersonofArea() throws SQLException{
+        String query = "SELECT a.AreaCode, COUNT(a.AreaCode) As NumOfCitizens\n" +
+                    "FROM Area a\n" +
+                    "INNER JOIN Centre c\n" +
+                    "ON a.AreaCode = c.AreaCode\n" +
+                    "INNER JOIN PersonDetails p \n" +
+                    "ON c.CentreId = p.CentreId\n" +
+                    "GROUP BY a.AreaCode\n" +
+                    "HAVING COUNT(a.AreaCode) > -1";
+        PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        
+        return rs;
+    }
 
     /**
      * This method performs INSERT query to insert an person into the database.
