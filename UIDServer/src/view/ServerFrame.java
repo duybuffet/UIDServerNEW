@@ -28,12 +28,11 @@ public class ServerFrame extends javax.swing.JFrame {
      */
     public ServerFrame() {
         initComponents();
-        setTitle("Server");
-        
-        
-        btnStart.setEnabled(true);
+        btnStart.setEnabled(false);
         btnStop.setEnabled(false);
-        
+        setTitle("Server");
+        this.setLocationRelativeTo(null);
+
         try {
             UIManager.setLookAndFeel(new SyntheticaClassyLookAndFeel());
         } catch (Exception e) {

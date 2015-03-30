@@ -56,7 +56,4 @@ public class DbConnect {
     public static Connection getConnection() {
         return instance.createConnection();
     }   
-    public static void main(String[] args) {
-        System.out.println(getConnection());
-    }
 }

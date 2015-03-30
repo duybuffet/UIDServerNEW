@@ -9,7 +9,7 @@ import common.model.Area;
 import common.model.Centre;
 import common.model.Employee;
 import common.model.PersonDetails;
-import common.utility.ChartArea;
+import common.utility.ChartHelper;
 import dao.AllDao;
 import dao.AreaDAO;
 import dao.CentreDAO;
@@ -39,6 +39,8 @@ import javax.swing.table.DefaultTableModel;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.CategoryDataset;
 import remote.RMICitizenAction;
 import view.AreaPanel;
 import view.CentreFrame;
@@ -65,13 +67,13 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private RequestPanel requestPanel;
     private MenuPanel menuPanel;
     private UserPanel userPanel;
-    private ChartPanel chartPanel;
+    private org.jfree.chart.ChartPanel chartPanel;
     private ExportToExcelPanel exportToExcelPanel;
 
     private final int PORT = 8989;
     private final String HOST = "localhost";
     private Registry registry;
-    private final String RMI_SERVICE = "RMIClientAction";    
+    private final String RMI_SERVICE = "RMIClientAction";
     private static String USER_ONLINE;
     private String areaCode;
 
@@ -90,11 +92,19 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         menuPanel = new MenuPanel();
         userPanel = new UserPanel();
         exportToExcelPanel = new ExportToExcelPanel();
-        chartPanel = new ChartPanel();
+        
+        CategoryDataset dataset;
+        try {
+            dataset = ChartHelper.createDataset();
+            JFreeChart chart = ChartHelper.createChart(dataset);
+            chartPanel = new org.jfree.chart.ChartPanel(chart);
+        } catch (SQLException ex) {
+            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
+        }
 
         // set login panel first when main frame is opened
         this.serverFrame.getMainSplitPane().setRightComponent(loginPanel);
-        this.serverFrame.getMainSplitPane().setLeftComponent(menuPanel);
+        this.serverFrame.getMainSplitPane().setLeftComponent(null);
 
         // add action listener
         loginPanel.addBtnLoginListener(new LoginListener());
@@ -128,10 +138,12 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             try {
                 if (employeeDAO.login(employee)) {
                     serverFrame.showMessage("Login successfully!");
+                    serverFrame.getMainSplitPane().setLeftComponent(menuPanel);
                     serverFrame.getMainSplitPane().setRightComponent(userPanel);
                     userPanel.addBtnUserListener(new UserListener());
                     menuPanel.addBtnMenuListener(new MenuListener());
                     serverFrame.addBtnControlListener(new ControlServerListener());
+                    serverFrame.getBtnStart().setEnabled(true);
                     USER_ONLINE = employee.getUsername();
                 } else {
                     serverFrame.showMessage("Login failed. Please reinput username or password");
@@ -167,8 +179,6 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 new ExportToExcelListener().showAllEmployee();
             } else if (btn == menuPanel.getBtnChart()) {
                 serverFrame.getMainSplitPane().setRightComponent(chartPanel);
-                ChartArea chart = new ChartArea();
-                chart.showChart();
             }
         }
     }
@@ -204,7 +214,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
     class AreaListener implements ActionListener {
 
-        AreaDAO areaDAO;        
+        AreaDAO areaDAO;
         String areaName;
         String areaCodeTemp;
 
