@@ -43,34 +43,32 @@ public class LoginPanel extends javax.swing.JPanel {
 
         setLayout(null);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(204, 204, 255));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel1.setText("Login System");
         add(jLabel1);
-        jLabel1.setBounds(340, 80, 140, 22);
+        jLabel1.setBounds(350, 80, 190, 40);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(204, 204, 255));
-        jLabel2.setText("Username:");
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setText("Username :");
         add(jLabel2);
-        jLabel2.setBounds(260, 160, 70, 14);
+        jLabel2.setBounds(260, 160, 90, 20);
         add(txtUName);
-        txtUName.setBounds(340, 160, 140, 20);
+        txtUName.setBounds(380, 160, 150, 20);
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(204, 204, 255));
-        jLabel3.setText("Password:");
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setText("Password :");
         add(jLabel3);
-        jLabel3.setBounds(260, 200, 70, 14);
+        jLabel3.setBounds(260, 200, 90, 15);
         add(txtPass);
-        txtPass.setBounds(340, 200, 140, 20);
+        txtPass.setBounds(380, 200, 150, 20);
 
-        btnLogin.setForeground(new java.awt.Color(204, 204, 255));
+        btnLogin.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnLogin.setText("Login");
         add(btnLogin);
-        btnLogin.setBounds(350, 250, 90, 23);
+        btnLogin.setBounds(370, 250, 100, 30);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/background3.jpg"))); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 153, 153));
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/NewsletterII_bookBgTexture_.png"))); // NOI18N
         add(jLabel4);
         jLabel4.setBounds(0, 0, 860, 520);
     }// </editor-fold>//GEN-END:initComponents

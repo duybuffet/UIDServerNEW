@@ -32,6 +32,9 @@ public class RequestPanel extends javax.swing.JPanel {
         tblRequest = new javax.swing.JTable();
         btnVerify = new javax.swing.JButton();
         btnDeny = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+
+        setLayout(null);
 
         tblRequest.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -46,38 +49,38 @@ public class RequestPanel extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblRequest);
 
+        add(jScrollPane1);
+        jScrollPane1.setBounds(0, 0, 740, 190);
+
+        btnVerify.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnVerify.setText("Verify");
+        btnVerify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerifyActionPerformed(evt);
+            }
+        });
+        add(btnVerify);
+        btnVerify.setBounds(270, 220, 70, 30);
 
+        btnDeny.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnDeny.setText("Deny");
+        add(btnDeny);
+        btnDeny.setBounds(380, 220, 70, 30);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(183, 183, 183)
-                .addComponent(btnVerify)
-                .addGap(41, 41, 41)
-                .addComponent(btnDeny)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnVerify)
-                    .addComponent(btnDeny))
-                .addContainerGap(81, Short.MAX_VALUE))
-        );
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Grey-Background-39.png"))); // NOI18N
+        add(jLabel1);
+        jLabel1.setBounds(-4, -4, 750, 520);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnVerifyActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeny;
     private javax.swing.JButton btnVerify;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblRequest;
     // End of variables declaration//GEN-END:variables
