@@ -61,7 +61,7 @@
         <Container class="javax.swing.JSplitPane" name="mainSplitPane">
           <Properties>
             <Property name="dividerLocation" type="int" value="113"/>
-            <Property name="dividerSize" type="int" value="2"/>
+            <Property name="dividerSize" type="int" value="1"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

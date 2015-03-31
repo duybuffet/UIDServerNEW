@@ -60,7 +60,7 @@ public class ServerFrame extends javax.swing.JFrame {
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         mainSplitPane.setDividerLocation(113);
-        mainSplitPane.setDividerSize(2);
+        mainSplitPane.setDividerSize(1);
         jPanel1.add(mainSplitPane, java.awt.BorderLayout.CENTER);
 
         btnStart.setText("Start");
