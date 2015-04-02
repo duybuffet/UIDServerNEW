@@ -38,12 +38,15 @@ public class Test {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+                    Thread.sleep(6500);
                     ServerFrame view = new ServerFrame();
                     view.setVisible(true);
                     view.setResizable(false);
                     ServerControl control = new ServerControl(view);
                     // test github dang hung
                 } catch (RemoteException ex) {
+                    Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
                     Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
