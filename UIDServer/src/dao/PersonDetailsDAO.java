@@ -238,4 +238,34 @@ public class PersonDetailsDAO {
         }
         return total;
     }
+    
+    public boolean verify(int status, int requestedId) throws SQLException{
+        String query = "UPDATE PersonDetails set Status = ? WHERE RequestedId =  ?";
+        PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
+        ps.setInt(1, status);
+        ps.setInt(2, requestedId);
+        int i = ps.executeUpdate();
+        if(i>0) return true;
+        else return false;
+    }
+    public ArrayList<PersonDetails> selectNewRequest() throws SQLException{
+        ArrayList<PersonDetails> list = new ArrayList<>();
+        String query = "SELECT \"RequestedId\",\"FirstName\",\"MiddleName\",\"LastName\",\"DOB\",\"Gender\",\"Address\",\"Occupation\",\"Married\" FROM PersonDetails WHERE Status=0";
+        PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            PersonDetails per = new PersonDetails();
+            per.setRequestedId(rs.getInt(1));
+            per.setFirstName(rs.getString(2));
+            per.setMiddleName(rs.getString(3));
+            per.setLastName(rs.getString(4));
+            per.setDob(rs.getString(5));
+            per.setGender(rs.getInt(6));
+            per.setOccupation(rs.getString(7));
+            per.setMarried(rs.getInt("Married"));
+            list.add(per);
+        }
+        return list;
+    }
+    
 }   

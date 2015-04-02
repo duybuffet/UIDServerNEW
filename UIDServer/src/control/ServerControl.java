@@ -32,6 +32,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -76,6 +77,8 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private final String RMI_SERVICE = "RMIClientAction";
     private static String USER_ONLINE;
     private String areaCode;
+    
+    private static int NUM_REQUEST = 0;
 
     public ServerControl(ServerFrame serverFrame) throws RemoteException {
         initComponents(serverFrame);
@@ -88,19 +91,9 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         loginPanel = new LoginPanel();
         areaPanel = new AreaPanel();
         employeePanel = new EmployeePanel();
-        requestPanel = new RequestPanel();
         menuPanel = new MenuPanel();
         userPanel = new UserPanel();
         exportToExcelPanel = new ExportToExcelPanel();
-        
-        CategoryDataset dataset;
-        try {
-            dataset = ChartHelper.createDataset();
-            JFreeChart chart = ChartHelper.createChart(dataset);
-            chartPanel = new org.jfree.chart.ChartPanel(chart);
-        } catch (SQLException ex) {
-            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
-        }
 
         // set login panel first when main frame is opened
         this.serverFrame.getMainSplitPane().setRightComponent(loginPanel);
@@ -108,6 +101,18 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
         // add action listener
         loginPanel.addBtnLoginListener(new LoginListener());
+        
+        // chart panel, request panel
+        CategoryDataset dataset;
+        try {
+            dataset = ChartHelper.createDataset();
+            JFreeChart chart = ChartHelper.createChart(dataset);
+            chartPanel = new org.jfree.chart.ChartPanel(chart);            
+        } catch (SQLException ex) {
+            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
+        }
+        initRequestPanel();
+        establishLabelRequest();
     }
 
     @Override
@@ -117,7 +122,26 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
     @Override
     public void sendRequest(PersonDetails pd, int centreId) throws RemoteException {
+        establishLabelRequest();
         new PersonDetailsDAO().insert(pd, centreId);
+    }
+
+    private void initRequestPanel() {
+        try {
+            requestPanel = new RequestPanel();
+        } catch (SQLException ex) {
+            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
+        }
+    }
+
+    private void establishLabelRequest() {
+        try {
+            NUM_REQUEST = new PersonDetailsDAO().selectNewRequest().size();
+        } catch (SQLException ex) {
+            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
+            NUM_REQUEST = 0;
+        }
+        serverFrame.getLblRequest().setText("Request : " + NUM_REQUEST);
     }
 
     class LoginListener implements ActionListener {
@@ -167,6 +191,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
                 serverFrame.getMainSplitPane().setRightComponent(employeePanel);
                 employeePanel.addBtnEmployeeListener(new EmployeeListener());
             } else if (btn == menuPanel.getBtnRequest()) {
+                initRequestPanel();
                 serverFrame.getMainSplitPane().setRightComponent(requestPanel);
             } else if (btn == menuPanel.getBtnUser()) {
                 serverFrame.getMainSplitPane().setRightComponent(userPanel);
