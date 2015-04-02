@@ -160,6 +160,7 @@ public class PersonDetailsDAO {
      * @throws SQLException
      */
     public void insert(PersonDetails personDetails, int centreId) {
+    
         try {
             String query = "INSERT INTO PersonDetails(UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof, CentreId)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
@@ -237,5 +238,4 @@ public class PersonDetailsDAO {
         }
         return total;
     }
-
 }   
