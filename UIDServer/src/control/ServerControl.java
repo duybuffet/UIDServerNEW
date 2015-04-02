@@ -60,7 +60,7 @@ import view.RequestPanel;
  */
 public class ServerControl extends UnicastRemoteObject implements RMICitizenAction {
 
-    private ServerFrame serverFrame;
+    private static ServerFrame serverFrame;
     private CentreFrame centreFrame;
     private AreaPanel areaPanel;
     private EmployeePanel employeePanel;
@@ -121,9 +121,9 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     }
 
     @Override
-    public void sendRequest(PersonDetails pd, int centreId) throws RemoteException {
-        establishLabelRequest();
+    public void sendRequest(PersonDetails pd, int centreId) throws RemoteException {        
         new PersonDetailsDAO().insert(pd, centreId);
+        establishLabelRequest();
     }
 
     private void initRequestPanel() {
@@ -134,7 +134,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         }
     }
 
-    private void establishLabelRequest() {
+    public static void establishLabelRequest() {
         try {
             NUM_REQUEST = new PersonDetailsDAO().selectNewRequest().size();
         } catch (SQLException ex) {

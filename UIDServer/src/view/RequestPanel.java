@@ -6,6 +6,7 @@
 package view;
 
 import common.model.PersonDetails;
+import control.ServerControl;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -124,6 +125,7 @@ public class RequestPanel extends javax.swing.JPanel {
                     showMessage("Verify successful!!");
                     model.removeRow(row);
                     this.getTblRequest().setModel(model);
+                    ServerControl.establishLabelRequest();
                 } else {
                     showMessage("Verify Failed!!");
                 }
@@ -147,6 +149,7 @@ public class RequestPanel extends javax.swing.JPanel {
                     showMessage("Deny successful!!");
                     model.removeRow(row);
                     this.getTblRequest().setModel(model);
+                    ServerControl.establishLabelRequest();
                 } else {
                     showMessage("Deny Failed!!");
                 }
