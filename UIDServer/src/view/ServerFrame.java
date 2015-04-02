@@ -8,10 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import de.javasoft.plaf.synthetica.SyntheticaClassyLookAndFeel;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -33,11 +29,6 @@ public class ServerFrame extends javax.swing.JFrame {
         setTitle("Server");
         this.setLocationRelativeTo(null);
 
-        try {
-            UIManager.setLookAndFeel(new SyntheticaClassyLookAndFeel());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**

@@ -93,14 +93,14 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
         userPanel = new UserPanel();
         exportToExcelPanel = new ExportToExcelPanel();
         
-//        CategoryDataset dataset;
-//        try {
-//            dataset = ChartHelper.createDataset();
-//            JFreeChart chart = ChartHelper.createChart(dataset);
-//            chartPanel = new org.jfree.chart.ChartPanel(chart);
-//        } catch (SQLException ex) {
-//            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
-//        }
+        CategoryDataset dataset;
+        try {
+            dataset = ChartHelper.createDataset();
+            JFreeChart chart = ChartHelper.createChart(dataset);
+            chartPanel = new org.jfree.chart.ChartPanel(chart);
+        } catch (SQLException ex) {
+            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
+        }
 
         // set login panel first when main frame is opened
         this.serverFrame.getMainSplitPane().setRightComponent(loginPanel);
@@ -135,22 +135,22 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
             employee.setUsername(userName);
             employee.setPass(pass);
 
-//            try {
-//                if (employeeDAO.login(employee)) {
-//                    serverFrame.showMessage("Login successfully!");
+            try {
+                if (employeeDAO.login(employee)) {
+                    serverFrame.showMessage("Login successfully!");
                     serverFrame.getMainSplitPane().setLeftComponent(menuPanel);
                     serverFrame.getMainSplitPane().setRightComponent(userPanel);
                     userPanel.addBtnUserListener(new UserListener());
                     menuPanel.addBtnMenuListener(new MenuListener());
-//                    serverFrame.addBtnControlListener(new ControlServerListener());
-//                    serverFrame.getBtnStart().setEnabled(true);
-//                    USER_ONLINE = employee.getUsername();
-//                } else {
-//                    serverFrame.showMessage("Login failed. Please reinput username or password");
-//                }
-//            } catch (SQLException ex) {
-//                serverFrame.showMessage("Server error! Sorry for this unconvenient.");
-//            }
+                    serverFrame.addBtnControlListener(new ControlServerListener());
+                    serverFrame.getBtnStart().setEnabled(true);
+                    USER_ONLINE = employee.getUsername();
+                } else {
+                    serverFrame.showMessage("Login failed. Please reinput username or password");
+                }
+            } catch (SQLException ex) {
+                serverFrame.showMessage("Server error! Sorry for this unconvenient.");
+            }
         }
     }
 
