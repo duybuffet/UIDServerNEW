@@ -5,9 +5,9 @@
  */
 package dao;
 
-
 import common.model.PersonDetails;
 import common.utility.DbConnect;
+import common.utility.UtilityTools;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,17 +17,20 @@ import java.util.logging.Logger;
 
 /**
  * A class is responsible performing SQL queries on table PersonDetails
+ *
  * @author DH
  */
 public class PersonDetailsDAO {
 
     public PersonDetailsDAO() {
     }
+
     /**
      * This method performs SELECT query to get all people from the database.
+     *
      * @return ArrayList<PersonDetails>
      * @throws SQLException
-     */  
+     */
     public ArrayList<PersonDetails> selectAll() throws SQLException {
         ArrayList<PersonDetails> arrPersonDetails = new ArrayList<>();
         String query = "SELECT RequestedId, UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof FROM PersonDetails";
@@ -35,47 +38,50 @@ public class PersonDetailsDAO {
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            arrPersonDetails.add(new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"),rs.getInt("Status"),
-                     rs.getString("FirstName"), rs.getString("MiddleName"),
+            arrPersonDetails.add(new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"), rs.getInt("Status"),
+                    rs.getString("FirstName"), rs.getString("MiddleName"),
                     rs.getString("LastName"), rs.getString("DOB"), rs.getInt("Gender"),
                     rs.getString("Email"), rs.getString("Address"), rs.getString("Education"),
-                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"),rs.getString("CitizenshipProof")));
+                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"), rs.getString("CitizenshipProof")));
         }
         return arrPersonDetails;
     }
-    
+
     /**
      * This method performs SELECT query to get all people from the database.
+     *
      * @return ArrayList<PersonDetails>
      * @throws SQLException
-     */  
+     */
     public ArrayList<PersonDetails> selectAllByFullName(String fName, String mName, String lName) {
         ArrayList<PersonDetails> arrPersonDetails = new ArrayList<>();
-        try {            
-            String query = "SELECT RequestedId, UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof FROM PersonDetails WHERE FirstName LIKE '%"+fName+"%' AND MiddleName LIKE '%"+mName+"%' AND LastName LIKE '%"+lName+"%'";
+        try {
+            String query = "SELECT RequestedId, UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof FROM PersonDetails WHERE FirstName LIKE '%" + fName + "%' AND MiddleName LIKE '%" + mName + "%' AND LastName LIKE '%" + lName + "%'";
             PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
             ResultSet rs = ps.executeQuery();
-            
+
             while (rs.next()) {
-                arrPersonDetails.add(new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"),rs.getInt("Status"),
+                arrPersonDetails.add(new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"), rs.getInt("Status"),
                         rs.getString("FirstName"), rs.getString("MiddleName"),
                         rs.getString("LastName"), rs.getString("DOB"), rs.getInt("Gender"),
                         rs.getString("Email"), rs.getString("Address"), rs.getString("Education"),
-                        rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"),rs.getString("CitizenshipProof")));
+                        rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"), rs.getString("CitizenshipProof")));
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(PersonDetailsDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return arrPersonDetails;
     }
-    
+
     /**
-     * This method performs SELECT query to get all people of the specific centre id from the database.
+     * This method performs SELECT query to get all people of the specific
+     * centre id from the database.
+     *
      * @param centreId
      * @return ArrayList<PersonDetails>
      * @throws SQLException
-     */  
+     */
     public ArrayList<PersonDetails> selectAllByCentreId(int centreId) throws SQLException {
         ArrayList<PersonDetails> arrPersonDetails = new ArrayList<>();
         String query = "SELECT RequestedId, UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof FROM PersonDetails WHERE centreId = " + centreId;
@@ -83,17 +89,19 @@ public class PersonDetailsDAO {
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            arrPersonDetails.add(new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"),rs.getInt("Status"),
-                     rs.getString("FirstName"), rs.getString("MiddleName"),
+            arrPersonDetails.add(new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"), rs.getInt("Status"),
+                    rs.getString("FirstName"), rs.getString("MiddleName"),
                     rs.getString("LastName"), rs.getString("DOB"), rs.getInt("Gender"),
                     rs.getString("Email"), rs.getString("Address"), rs.getString("Education"),
-                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"),rs.getString("CitizenshipProof")));
+                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"), rs.getString("CitizenshipProof")));
         }
         return arrPersonDetails;
     }
 
     /**
-     * This method performs SELECT query to get a person with specific Unique Identification from the database.
+     * This method performs SELECT query to get a person with specific Unique
+     * Identification from the database.
+     *
      * @param uid The unique identification
      * @return PersonDetails
      * @throws SQLException
@@ -106,17 +114,19 @@ public class PersonDetailsDAO {
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            personDetails = new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"),rs.getInt("Status"),
-                     rs.getString("FirstName"), rs.getString("MiddleName"),
+            personDetails = new PersonDetails(rs.getInt("RequestedId"), rs.getString("UID"), rs.getInt("Status"),
+                    rs.getString("FirstName"), rs.getString("MiddleName"),
                     rs.getString("LastName"), rs.getString("DOB"), rs.getInt("Gender"),
                     rs.getString("Email"), rs.getString("Address"), rs.getString("Education"),
-                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"),rs.getString("CitizenshipProof"));
+                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"), rs.getString("CitizenshipProof"));
         }
         return personDetails;
     }
-    
+
     /**
-     * This method performs SELECT query to get a person with specific requested id from the database.
+     * This method performs SELECT query to get a person with specific requested
+     * id from the database.
+     *
      * @param rid Requested ID
      * @return PersonDetails
      * @throws SQLException
@@ -129,38 +139,39 @@ public class PersonDetailsDAO {
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            personDetails = new PersonDetails(rid, rs.getString("UID"),rs.getInt("Status"),
-                     rs.getString("FirstName"), rs.getString("MiddleName"),
+            personDetails = new PersonDetails(rid, rs.getString("UID"), rs.getInt("Status"),
+                    rs.getString("FirstName"), rs.getString("MiddleName"),
                     rs.getString("LastName"), rs.getString("DOB"), rs.getInt("Gender"),
                     rs.getString("Email"), rs.getString("Address"), rs.getString("Education"),
-                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"),rs.getString("CitizenshipProof"));
+                    rs.getString("Occupation"), rs.getInt("Married"), rs.getInt("AddressProof"), rs.getString("CitizenshipProof"));
         }
         return personDetails;
     }
-    
-    public ResultSet selectAllPersonofArea() throws SQLException{
-        String query = "SELECT a.AreaCode, COUNT(a.AreaCode) As NumOfCitizens\n" +
-                    "FROM Area a\n" +
-                    "INNER JOIN Centre c\n" +
-                    "ON a.AreaCode = c.AreaCode\n" +
-                    "INNER JOIN PersonDetails p \n" +
-                    "ON c.CentreId = p.CentreId\n" +
-                    "GROUP BY a.AreaCode\n" +
-                    "HAVING COUNT(a.AreaCode) > -1";
+
+    public ResultSet selectAllPersonofArea() throws SQLException {
+        String query = "SELECT a.AreaCode, COUNT(a.AreaCode) As NumOfCitizens\n"
+                + "FROM Area a\n"
+                + "INNER JOIN Centre c\n"
+                + "ON a.AreaCode = c.AreaCode\n"
+                + "INNER JOIN PersonDetails p \n"
+                + "ON c.CentreId = p.CentreId\n"
+                + "GROUP BY a.AreaCode\n"
+                + "HAVING COUNT(a.AreaCode) > -1";
         PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
-        
+
         return rs;
     }
 
     /**
      * This method performs INSERT query to insert an person into the database.
+     *
      * @param personDetails The personDetails we want to insert to the database.
      * @param centreId The centre that person belongs to
      * @throws SQLException
      */
     public void insert(PersonDetails personDetails, int centreId) {
-    
+
         try {
             String query = "INSERT INTO PersonDetails(UID,Status,FirstName,MiddleName,LastName,DOB,Gender,Email,Address,Education,Occupation,Married,AddressProof,CitizenshipProof, CentreId)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
@@ -184,8 +195,10 @@ public class PersonDetailsDAO {
             Logger.getLogger(PersonDetailsDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
      * This method performs UPDATE query to update an person in the database.
+     *
      * @param personDetails The personDetails we want to update in the database.
      * @param centreId The centre that person belongs to
      * @throws SQLException
@@ -210,9 +223,12 @@ public class PersonDetailsDAO {
         ps.setInt(15, personDetails.getRequestedId());
         ps.executeUpdate();
     }
+
     /**
      * This method performs DELETE query to delete an person from the database.
-     * @param personDetails The personDetails we want to delete from the database.
+     *
+     * @param personDetails The personDetails we want to delete from the
+     * database.
      * @throws SQLException
      */
     public void delete(PersonDetails personDetails) throws SQLException {
@@ -221,9 +237,10 @@ public class PersonDetailsDAO {
         ps.setInt(1, personDetails.getRequestedId());
         ps.executeUpdate();
     }
-    
+
     /**
-     * This method count how many record there are in PersonDetails table. 
+     * This method count how many record there are in PersonDetails table.
+     *
      * @return int Number of record
      * @throws SQLException
      */
@@ -238,22 +255,27 @@ public class PersonDetailsDAO {
         }
         return total;
     }
-    
-    public boolean verify(int status, int requestedId) throws SQLException{
-        String query = "UPDATE PersonDetails set Status = ? WHERE RequestedId =  ?";
+
+    public boolean verify(int status, int requestedId) throws SQLException {
+        String query = "UPDATE PersonDetails SET Status = ?, Uid = ? WHERE RequestedId =  ?";
         PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
         ps.setInt(1, status);
-        ps.setInt(2, requestedId);
+        ps.setString(2, UtilityTools.generateUID(countRecord(), new CentreDAO().selectAreaCodeByCentreId(new PersonDetailsDAO().selectCentreIdByReqId(requestedId))));
+        ps.setInt(3, requestedId);
         int i = ps.executeUpdate();
-        if(i>0) return true;
-        else return false;
+        if (i > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    public ArrayList<PersonDetails> selectNewRequest() throws SQLException{
+
+    public ArrayList<PersonDetails> selectNewRequest() throws SQLException {
         ArrayList<PersonDetails> list = new ArrayList<>();
         String query = "SELECT \"RequestedId\",\"FirstName\",\"MiddleName\",\"LastName\",\"DOB\",\"Gender\",\"Address\",\"Occupation\",\"Married\" FROM PersonDetails WHERE Status=0";
         PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
         ResultSet rs = ps.executeQuery();
-        while(rs.next()){
+        while (rs.next()) {
             PersonDetails per = new PersonDetails();
             per.setRequestedId(rs.getInt(1));
             per.setFirstName(rs.getString(2));
@@ -267,5 +289,17 @@ public class PersonDetailsDAO {
         }
         return list;
     }
-    
-}   
+
+    public int selectCentreIdByReqId(int requestedId) throws SQLException {
+        int centreId = -1;
+        String query = "SELECT CentreId FROM PersonDetails WHERE RequestedId = " + requestedId;
+        PreparedStatement ps = null;
+        ps = DbConnect.getConnection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            centreId = rs.getInt("CentreId");
+        }
+        return centreId;
+    }
+
+}

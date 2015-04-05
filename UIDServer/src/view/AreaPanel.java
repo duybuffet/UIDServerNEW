@@ -132,7 +132,7 @@ public class AreaPanel extends javax.swing.JPanel {
             }
         });
         add(btnGotoCentre);
-        btnGotoCentre.setBounds(570, 470, 111, 35);
+        btnGotoCentre.setBounds(570, 450, 111, 35);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Grey-Background-39.png"))); // NOI18N
         add(jLabel3);

@@ -77,7 +77,7 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     private final String RMI_SERVICE = "RMIClientAction";
     private static String USER_ONLINE;
     private String areaCode;
-    
+
     private static int NUM_REQUEST = 0;
 
     public ServerControl(ServerFrame serverFrame) throws RemoteException {
@@ -101,13 +101,13 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
 
         // add action listener
         loginPanel.addBtnLoginListener(new LoginListener());
-        
+
         // chart panel, request panel
         CategoryDataset dataset;
         try {
             dataset = ChartHelper.createDataset();
             JFreeChart chart = ChartHelper.createChart(dataset);
-            chartPanel = new org.jfree.chart.ChartPanel(chart);            
+            chartPanel = new org.jfree.chart.ChartPanel(chart);
         } catch (SQLException ex) {
             serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
         }
@@ -121,10 +121,21 @@ public class ServerControl extends UnicastRemoteObject implements RMICitizenActi
     }
 
     @Override
-    public void sendRequest(PersonDetails pd, int centreId) throws RemoteException {        
+    public void sendRequest(PersonDetails pd, int centreId) throws RemoteException {
         new PersonDetailsDAO().insert(pd, centreId);
         establishLabelRequest();
     }
+
+    @Override
+    public ArrayList<Centre> loadCentre() throws RemoteException {
+        ArrayList<Centre> list = null;
+        try {
+            list = new CentreDAO().selectAll();
+        } catch (SQLException ex) {
+            serverFrame.showMessage("There was a error! Sorry for this unconvenience!");
+        }
+        return list;
+    }        
 
     private void initRequestPanel() {
         try {

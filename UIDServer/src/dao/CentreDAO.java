@@ -12,9 +12,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class is responsible performing SQL queries on table Centre
+ *
  * @author Duy Buffet
  */
 public class CentreDAO {
@@ -166,5 +169,17 @@ public class CentreDAO {
         PreparedStatement ps = DbConnect.getConnection().prepareStatement(query);
         ps.setInt(1, centre.getCentreId());
         ps.executeUpdate();
+    }
+
+    public String selectAreaCodeByCentreId(int centreId) throws SQLException {
+        String areaCode = "";
+        String query = "SELECT AreaCode FROM Centre WHERE CentreId = " + centreId;
+        PreparedStatement ps = null;
+        ps = DbConnect.getConnection().prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            areaCode = rs.getString("AreaCode");
+        }
+        return areaCode;
     }
 }
